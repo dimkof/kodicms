@@ -1,0 +1,67 @@
+#headline {
+	tbody {
+		tr {
+
+
+			&.unpublished {
+				th,td {
+					color: #ccc;
+
+					a { color: #ccc; }
+				}
+			}
+		}
+	}
+}
+
+#ds-menu {
+	background-color: whitesmoke;
+
+	.widget-content {
+		padding: 0 15px 10px;
+	}
+
+	li.selected > a {
+		font-weight: bold;
+	}
+}
+
+#datasource-toolbar {
+	margin: 0;
+}
+
+#html_fields {
+	textarea {
+		width: 100%;
+	}
+
+	.tabs-content {
+		position: relative;
+		height: 240px;
+		background-color: #fff;
+		margin-top: -20px;
+		.tab-pane {
+			height: 240px;
+			width: 100%;
+			
+			z-index: 1;
+
+			position: absolute;
+
+			&.active {
+				z-index: 2;
+			}
+		}
+
+		&:after {
+			clear: both;
+		}
+	}
+}
+
+#field-options {
+
+	#fieldset  {
+		display: none;
+	}
+}
