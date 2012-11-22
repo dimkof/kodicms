@@ -3,7 +3,7 @@
 	<div class="controls">
 		<?php echo Form::input( $field->name, $value, array(
 			'class' => 'input-auto input-date', 'id' => $field->name,
-			'maxlength' => $field->length, 'size' => 10
+			'size' => 10
 		) ); ?>
 	</div>
 </div>
