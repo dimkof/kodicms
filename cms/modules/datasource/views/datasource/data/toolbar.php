@@ -1,7 +1,7 @@
 <div class="btn-toolbar" id="datasource-toolbar">
 	<div class="btn-group">
-		<?php echo UI::button('Create datasource', array(
-			'href' => '#', 'class' => 'btn dropdown-toggle btn-success',
+		<?php echo UI::button('Create', array(
+			'href' => '#', 'class' => 'btn dropdown-toggle btn-success btn-mini',
 			'icon' => UI::icon( 'plus icon-white' ), 'data-toggle' => 'dropdown'
 		)); ?>
 
@@ -14,15 +14,16 @@
 
 	<?php if($ds_id): ?>
 	<div class="btn-group pull-right">
-		<?php echo UI::button('Edit DS', array(
+		<?php echo UI::button('Edit', array(
 			'href' => $ds_type . '/section/edit/' . $ds_id,
-			'icon' => UI::icon( 'cog' )
+			'icon' => UI::icon( 'cog' ),
+			'class' => 'btn btn-mini'
 		)); ?>
 
-		<?php echo UI::button('Remove DS', array(
+		<?php echo UI::button('Remove', array(
 			'href' => $ds_type . '/section/remove/' . $ds_id,
 			'icon' => UI::icon( 'trash icon-white' ),
-			'class' => 'btn btn-danger btn-confirm'
+			'class' => 'btn btn-danger btn-confirm btn-mini'
 		)); ?>
 	</div>
 	<?php endif; ?>

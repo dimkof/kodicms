@@ -24,18 +24,23 @@
 
 			<div class="container-fluid">
 				<div id="content">
-					<div class="outline">
-						<div class="widget outline_inner">
-							<div class="widget-header">
-								<?php echo $toolbar; ?>
-								<span class="clearfix"></span>
-							</div>
-						</div>
-					</div>
+					
 					<br />
 					<div class="row-fluid">
 						<div class="span3">
+							
 							<?php echo $menu ?>
+							
+							<br />
+
+							<div class="outline">
+								<div class="widget outline_inner">
+									<div class="widget-header">
+										<?php echo $toolbar; ?>
+										<span class="clearfix"></span>
+									</div>
+								</div>
+							</div>
 						</div>
 						<div class="span9">
 							<?php echo $content; ?>
