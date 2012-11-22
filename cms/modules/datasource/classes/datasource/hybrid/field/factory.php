@@ -251,7 +251,7 @@ class DataSource_Hybrid_Field_Factory {
 	public static function get_full_key($key)
 	{
 		$key = str_replace(DataSource_Hybrid_Field::PREFFIX, '', $key);
-		$key = URL::title($key);
+		$key = URL::title($key, '_');
 		$key = strtolower($key);
 		
 		if(strlen($key) > 16)
