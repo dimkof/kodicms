@@ -72,17 +72,18 @@ class Datasource_Object_Decorator {
 	public $block = NULL;
 	
 	/**
-	 * 
-	 * @param string $ds_type
-	 * @param string $obj_type
-	 * @param integer $ds_id
+	 *
+	 * @var bool 
 	 */
-	public function __construct($ds_type, $obj_type, $ds_id)
-	{
-		$this->ds_id = (int) $ds_id;
-		$this->ds_type = $ds_type;
-		$this->type = $obj_type;
-	}
+	public $caching = FALSE;
+	
+	/**
+	 *
+	 * @var integer 
+	 */
+	public $cache_lifetime = 3600;
+
+	public function __construct() {}
 	
 	/**
 	 * 
@@ -110,11 +111,19 @@ class Datasource_Object_Decorator {
 			}
 		}
 		
-		$params = Arr::merge($params, $this->template_params);
-		
-		echo View::factory($this->template, array(
-			'args' => $params
-		));
+		if( 
+			$this->caching === TRUE 
+		AND 
+			! Fragment::load($this->get_cache_id(), $this->cache_lifetime)
+		)
+		{
+			echo $this->_fetch_render($params);
+			Fragment::save();
+		}
+		else 
+		{
+			echo $this->_fetch_render($params);
+		}
 		
 		if(!($this->block == self::BLOCK_TYPE_PRE OR $this->block == self::BLOCK_TYPE_POST)) 
 		{
@@ -130,8 +139,30 @@ class Datasource_Object_Decorator {
 		}
 	}
 	
-//	abstract public function init();
+	/**
+	 * 
+	 * @param array $params
+	 * @return View
+	 */
+	protected function _fetch_render($params)
+	{
+		$params = Arr::merge($params, $this->template_params);
+		$data = $this->fetch_data();
+		$data['params'] = $params;
+		return View::factory($this->template, $data);
+	}
+
 //	abstract public function on_page_load();
+//	abstract public function fetch_data();
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function get_cache_id()
+	{
+		return 'Object::' . $this->ds_type . '::' . $this->type . '::' . $this->id;
+	}
 
 	/**
 	 * 
@@ -142,6 +173,10 @@ class Datasource_Object_Decorator {
 		return $this->render($params);
 	}
 	
+	/**
+	 * 
+	 * @return bool
+	 */
 	public function loaded()
 	{
 		return isset($this->id) AND $this->id > 0;
@@ -153,7 +188,7 @@ class Datasource_Object_Decorator {
 	 */
 	public function __toString()
 	{
-		return $this->render($params);;
+		return $this->render($params);
 	}
 
 	/**
@@ -166,6 +201,12 @@ class Datasource_Object_Decorator {
 	public static function factory($ds_type, $obj_type, $ds_id) 
 	{
 		$class = 'Datasource_Object_' . $ds_type . '_' . $obj_type;
-		return new $class($ds_type, $obj_type, $ds_id);
+
+		$object = new $class;
+
+		$object->ds_type = $ds_type;
+		$object->type = $obj_type;
+		$object->ds_id = (int) $ds_id;
+		return $object;
 	}
 }

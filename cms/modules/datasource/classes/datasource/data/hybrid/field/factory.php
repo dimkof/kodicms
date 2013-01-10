@@ -166,7 +166,7 @@ class DataSource_Data_Hybrid_Field_Factory {
 
 		$result = array();
 		
-		$query = DDB::select('dsf.*')
+		$query = DB::select('dsf.*')
 			->from(array('hybriddatasources', 'dsh0'))
 			->from(array('hybriddatasources', 'dsh'))
 			->from(array('dshfields', 'dsf'))

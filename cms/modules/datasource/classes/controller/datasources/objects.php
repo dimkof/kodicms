@@ -8,7 +8,13 @@ class Controller_Datasources_Objects extends Controller_System_Datasource {
 
 		$map = Datasource_Object_Manager::map();
 
+		
 		$cur_node = Arr::get($this->request->query(), 'node');
+		if($cur_node === NULL)
+		{
+			$cur_node = key($map) . '.' . key($map[key($map)]);
+		}
+
 		$this->template->set_global(array(
 			'cur_node' => $cur_node
 		));
@@ -125,6 +131,16 @@ class Controller_Datasources_Objects extends Controller_System_Datasource {
 	{
 		$id = (int) $this->request->param('id');
 		$object = Datasource_Object_Manager::load($id);
+		$datasources = Datasource_Data_Manager::get_all($object->ds_type);
+		$fields = DataSource_Data_Hybrid_Field_Factory::get_related_fields($object->ds_id);
+
+		$fields_by_id = array();
+		foreach ($fields as $field)
+		{
+			$fields_by_id[$field->id] = $field;
+		}
+		
+		echo debug::vars($object, $datasources, $fields, $fields_by_id);
 		
 		$node = $object->ds_type . '.' . $object->type;
 		$path = $object->ds_type . '/' . $object->type;
@@ -137,7 +153,10 @@ class Controller_Datasources_Objects extends Controller_System_Datasource {
 			->add($object->name);
 		
 		$this->template->content = View::factory('datasource/object/template/' . $path, array(
-			'object' => $object
+			'object' => $object,
+			'datasources' => $datasources,
+			'fields' => $fields,
+			'fields_by_id' => $fields_by_id
 		));
 	}
 }

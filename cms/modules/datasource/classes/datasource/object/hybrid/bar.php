@@ -4,6 +4,6 @@
  * @package    Kodi/Datasource
  */
 
-class Datasource_Object_Hybrid_Bar extends Datasource_Object_Decorator {
+class Datasource_Object_Hybrid_Bar extends Datasource_Object_Hybrid_HL {
 
 }

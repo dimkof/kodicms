@@ -1,7 +1,6 @@
 <script>
 	$(function() {
 		$('#ds-menu .widget-content > ul').treeview({
-			collapsed:	true,
 			unique:		true,
 			persist:	"location"
 		});
