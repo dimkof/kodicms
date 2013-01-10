@@ -8,22 +8,22 @@ class Datasource_Object_Manager {
 	
 	public static function map()
 	{
-		return array(
-			
-		);
+		return Kohana::$config
+		   ->load('datasource')
+		   ->as_array();
 	}
 	
 	public static function get_objects($ds_type, $obj_type) 
 	{
 		$result = array();
 		
-		$res = DB::select('o.id', 'o.name', 'o.description', 'o.date')
+		$res = DB::select('o.id', 'o.name', 'o.description', 'o.date', 'o.ds_type')
 			->select(array(DB::expr('COUNT(:table)')->param( 
 					':table', Database::instance()->quote_column( 's.page_id' ) ), 'used'))
 			->from(array('objects', 'o'))
 			->join(array('siteobjects', 's'), 'left')
 				->on('o.id', '=', 's.obj_id')
-			->where('s.obj_id', '=', $ds_type)
+			->where('o.ds_type', '=', $ds_type)
 			->where('o.obj_type', '=', $obj_type)
 			->group_by('o.id')
 			->group_by('o.name')
@@ -32,7 +32,6 @@ class Datasource_Object_Manager {
 		
 		foreach ( $res as $row )
 		{
-			$type = key(Arr::get($row['ds_type'], self::map()));
 			$result[$row['id']] = array(
 				'name' => $row['name'],
 				'description' => $row['description'],
@@ -70,15 +69,15 @@ class Datasource_Object_Manager {
 	
 	public static function create($object)
 	{
-		if(!$object->obj_id)
+		if($object->loaded())
 		{
-			throw new HTTP_Exception_404('Object not loaded');
+			throw new HTTP_Exception_404('Object created');
 		}
 		
 		$data = array(
 			'ds_id' => $object->ds_id,
 			'ds_type' => $object->ds_type,
-			'obj_type' => $object->obj_type,
+			'obj_type' => $object->type,
 			'name' => $object->name,
 			'description' => $object->description,
 			'date' => time(),
@@ -91,5 +90,53 @@ class Datasource_Object_Manager {
 			->execute();
 
 		return $result[0];
+	}
+	
+	public static function save($object)
+	{
+		if( ! $object->loaded() )
+		{
+			throw new HTTP_Exception_404('Object not loaded');
+		}
+		
+		$old_object = self::load($object->id);
+
+		$data = array(
+			'ds_id' => $object->ds_id,
+			'ds_type' => $object->ds_type,
+			'obj_type' => $object->type,
+			'name' => $object->name,
+			'tpl' => $object->template,
+			'description' => $object->description,
+			'code' => serialize($object)
+		);
+		
+		$result = DB::update('objects')
+			->set($data)
+			->where('id', '=', $object->id)
+			->execute();
+
+		return $result[0];
+	}
+	
+	public static function remove( array $ids )
+	{
+		return DB::delete('objects')
+			->where('id', 'in', $ids)
+			->execute();
+	}
+	
+	public static function load($id)
+	{
+		$result = DB::select()->from('objects')
+			->where('id', '=', (int) $id)
+			->limit(1)
+			->execute()
+			->current();
+		
+		$object = unserialize($result['code']);
+		$object->id = $result['id'];
+		
+		return $object;
 	}
 }

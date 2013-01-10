@@ -16,13 +16,13 @@
 		)); ?>
 	</div>
 
-	<?php if(!empty($record->struct[DataSource_Hybrid_Field::TYPE_PRIMITIVE] )): ?>
+	<?php if(!empty($record->struct[DataSource_Data_Hybrid_Field::TYPE_PRIMITIVE] )): ?>
 	<div class="widget-header widget-no-border-radius widget-inverse">
-		<h4><?php echo DataSource_Hybrid_Field::TYPE_PRIMITIVE; ?></h4>
+		<h4><?php echo DataSource_Data_Hybrid_Field::TYPE_PRIMITIVE; ?></h4>
 	</div>
 	<div id="primitive_fields" class="widget-content">
-		<?php foreach($record->struct[DataSource_Hybrid_Field::TYPE_PRIMITIVE] as $type => $fields): ?>
-			<?php if($type !== DataSource_Hybrid_Field_Primitive::PRIMITIVE_TYPE_HTML): ?>
+		<?php foreach($record->struct[DataSource_Data_Hybrid_Field::TYPE_PRIMITIVE] as $type => $fields): ?>
+			<?php if($type !== DataSource_Data_Hybrid_Field_Primitive::PRIMITIVE_TYPE_HTML): ?>
 			<?php foreach($fields as $key): ?>
 		
 			<?php
@@ -64,11 +64,11 @@
 	</div>
 	<?php endif ;?>
 
-	<?php if(!empty($record->struct[DataSource_Hybrid_Field::TYPE_DOCUMENT])): ?>
+	<?php if(!empty($record->struct[DataSource_Data_Hybrid_Field::TYPE_DOCUMENT])): ?>
 	<div id="document_fields" class="well well-small">
 		<h5><?php echo __('Related documents'); ?></h5>
 		<hr />
-		<?php foreach($record->struct[DataSource_Hybrid_Field::TYPE_DOCUMENT] as $type => $fields): ?>
+		<?php foreach($record->struct[DataSource_Data_Hybrid_Field::TYPE_DOCUMENT] as $type => $fields): ?>
 			<?php foreach($fields as $key): ?>
 			<?php echo View::factory('datasource/data/hybrid/document/fields/document', array(
 				'value' => $doc->fields[$key], 'field' => $record->fields[$key], 'doc' => $doc
@@ -78,7 +78,7 @@
 	</div>
 	<?php endif ;?>
 
-	<?php if(!empty($record->struct[DataSource_Hybrid_Field::TYPE_DATASOURCE]) AND $doc->id):?>
+	<?php if(!empty($record->struct[DataSource_Data_Hybrid_Field::TYPE_DATASOURCE]) AND $doc->id):?>
 	<div id="datasources_fields" class="well well-small">
 		<h5><?php echo __('Datasources'); ?></h5>
 		<hr />
@@ -87,7 +87,7 @@
 				<col width="200px;"/>
 			</colgroup>
 			<tbody>
-			<?php foreach($record->struct[DataSource_Hybrid_Field::TYPE_DATASOURCE] as $fields): ?>
+			<?php foreach($record->struct[DataSource_Data_Hybrid_Field::TYPE_DATASOURCE] as $fields): ?>
 				<?php foreach($fields as $type => $key): ?>
 				<?php echo View::factory('datasource/data/hybrid/document/fields/datasource', array(
 					'value' => $doc->fields[$key], 'field' => $record->fields[$key]

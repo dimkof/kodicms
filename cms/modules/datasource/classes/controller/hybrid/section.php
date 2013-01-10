@@ -10,7 +10,7 @@ class Controller_Hybrid_Section extends Controller_System_Datasource
 			return $this->_create();
 		}
 
-		$dss = Datasource_Manager::get_all( Datasource_Manager::DS_HYBRID );
+		$dss = Datasource_Data_Manager::get_all( Datasource_Data_Manager::DS_HYBRID );
 		
 		$options = array(0 => __('None'));
 		
@@ -29,12 +29,12 @@ class Controller_Hybrid_Section extends Controller_System_Datasource
 	
 	private function _create()
 	{
-		$dsf = new Datasource_Hybrid_Factory();
+		$dsf = new DataSource_Data_Hybrid_Factory();
 		
 		$array = Validation::factory($this->request->post())
 			->rules('ds_key', array(
 				array('not_empty'),
-				array('Datasource_Hybrid_Factory::exists')
+				array('DataSource_Data_Hybrid_Factory::exists')
 			))
 			->rules('ds_name', array(
 				array('not_empty')
@@ -64,7 +64,7 @@ class Controller_Hybrid_Section extends Controller_System_Datasource
 	{
 		$ds_id = (int) $this->request->param('id');
 
-		$ds = Datasource_Manager::load($ds_id);
+		$ds = Datasource_Data_Manager::load($ds_id);
 		
 		if($this->request->method() === Request::POST)
 		{
@@ -115,7 +115,7 @@ class Controller_Hybrid_Section extends Controller_System_Datasource
 	{
 		$ds_id = (int) $this->request->param('id');
 		
-		$dsf = new Datasource_Hybrid_Factory();
+		$dsf = new DataSource_Data_Hybrid_Factory();
 		
 		$dsf->remove($ds_id);
 		$this->go_back();

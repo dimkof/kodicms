@@ -49,3 +49,24 @@ CREATE TABLE `hybriddatasources` (
   PRIMARY KEY (`ds_id`),
   UNIQUE KEY `ds_key` (`ds_key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `objects` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ds_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `ds_type` varchar(32) NOT NULL DEFAULT '',
+  `obj_type` varchar(32) NOT NULL DEFAULT '',
+  `tpl` int(10) unsigned DEFAULT NULL,
+  `name` varchar(64) NOT NULL DEFAULT '',
+  `description` varchar(255) DEFAULT NULL,
+  `date` int(10) unsigned NOT NULL DEFAULT '0',
+  `code` text,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `siteobjects` (
+  `page_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `obj_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `block` varchar(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`page_id`,`obj_id`),
+  KEY `page_block` (`page_id`,`block`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

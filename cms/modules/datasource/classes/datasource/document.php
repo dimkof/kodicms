@@ -67,7 +67,7 @@ class Datasource_Document {
 	/**
 	 * 
 	 * @param string $name
-	 * @return DataSource_Hybrid_Field
+	 * @return DataSource_Data_Hybrid_Field
 	 */
 	function get_field($name) 
 	{

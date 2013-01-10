@@ -2,6 +2,6 @@
 
 return array(
 	'ds_key' => array(
-		'Datasource_Hybrid_Factory::exists' => 'Datasource with key ":value" exists'
+		'DataSource_Data_Hybrid_Factory::exists' => 'Datasource with key ":value" exists'
 	)
 );

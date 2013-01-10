@@ -6,14 +6,14 @@ class Controller_Hybrid_Field extends Controller_System_Datasource
 	public function action_edit()
 	{
 		$id = (int) $this->request->param('id');
-		$field = DataSource_Hybrid_Field_Factory::get_field($id);
+		$field = DataSource_Data_Hybrid_Field_Factory::get_field($id);
 		
 		if($field === NULL)
 		{
 			throw new HTTP_Exception_404('Field ID :id not found', array(':id' => $id));
 		}
 		
-		$ds = Datasource_Manager::load($field->ds_id);
+		$ds = Datasource_Data_Manager::load($field->ds_id);
 		
 		if($this->request->method() === Request::POST)
 		{
@@ -24,7 +24,7 @@ class Controller_Hybrid_Field extends Controller_System_Datasource
 			->add($ds->name, 'hybrid/section/edit/' . $ds->ds_id)
 			->add(__(':action field', array(':action' => ucfirst($this->request->action()))));
 
-		$type = $field->family == DataSource_Hybrid_Field::TYPE_PRIMITIVE ? $field->type : $field->family;
+		$type = $field->family == DataSource_Data_Hybrid_Field::TYPE_PRIMITIVE ? $field->type : $field->family;
 		
 		$this->template->content = View::factory('datasource/data/hybrid/field/edit', array(
 			'ds' => $ds,
@@ -40,7 +40,7 @@ class Controller_Hybrid_Field extends Controller_System_Datasource
 		{
 			$old_field = clone($field);
 			$field->set($this->request->post());
-			DataSource_Hybrid_Field_Factory::update_field($old_field, $field);
+			DataSource_Data_Hybrid_Field_Factory::update_field($old_field, $field);
 		}
 		catch (Validation_Exception $e)
 		{
@@ -50,7 +50,7 @@ class Controller_Hybrid_Field extends Controller_System_Datasource
 		}
 		
 		// save and quit or save and continue editing?
-		if ( $this->request->post('commit') )
+		if ( $this->request->post('commit') !== NULL )
 		{
 			$this->go( URL::site('hybrid/section/edit/' . $field->ds_id, FALSE));
 		}
@@ -64,21 +64,21 @@ class Controller_Hybrid_Field extends Controller_System_Datasource
 	{
 		$ds_id = (int) $this->request->param('id');
 
-		$ds = Datasource_Manager::load($ds_id);
+		$ds = Datasource_Data_Manager::load($ds_id);
 		
 		if($this->request->method() === Request::POST)
 		{
 			return $this->_add($ds);
 		}
 		
-		$map = Datasource_Manager::get_tree();
-		$hds = Datasource_Manager::get_all(Datasource_Manager::DS_HYBRID);
+		$map = Datasource_Data_Manager::get_tree();
+		$hds = Datasource_Data_Manager::get_all(Datasource_Data_Manager::DS_HYBRID);
 		
 		$sections = array(); 
 		
-		foreach ( Datasource_Manager::types() as $key => $value )
+		foreach ( Datasource_Data_Manager::types() as $key => $value )
 		{
-			if($key != Datasource_Manager::DS_HYBRID)
+			if($key != Datasource_Data_Manager::DS_HYBRID)
 			{
 				foreach ( $map[$key] as $id => $name )
 				{
@@ -114,8 +114,8 @@ class Controller_Hybrid_Field extends Controller_System_Datasource
 			$family = $data['family'];
 			unset($data['family']);
 			
-			$field = DataSource_Hybrid_Field::factory($family, $data);
-			$field_id = DataSource_Hybrid_Field_Factory::create_field($ds->get_record(), $field);
+			$field = DataSource_Data_Hybrid_Field::factory($family, $data);
+			$field_id = DataSource_Data_Hybrid_Field_Factory::create_field($ds->get_record(), $field);
 		}
 		catch (Validation_Exception $e)
 		{
@@ -142,8 +142,8 @@ class Controller_Hybrid_Field extends Controller_System_Datasource
 		
 		$fields = $this->request->post('field');
 		
-		$ds = Datasource_Manager::load($ds_id);
-		DataSource_Hybrid_Field_Factory::remove_fields($ds->get_record(), $fields);
+		$ds = Datasource_Data_Manager::load($ds_id);
+		DataSource_Data_Hybrid_Field_Factory::remove_fields($ds->get_record(), $fields);
 		
 		$this->json = array(
 			'status' => TRUE,

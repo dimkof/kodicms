@@ -12,7 +12,7 @@
 		<div class="control-group">
 			<label class="control-label" for="name"><?php echo __('Field key'); ?></label>
 			<div class="controls">
-				<?php if($field->family === DataSource_Hybrid_Field::TYPE_PRIMITIVE): ?>
+				<?php if($field->family === DataSource_Data_Hybrid_Field::TYPE_PRIMITIVE): ?>
 				<?php echo Form::input( 'name', Arr::get($post_data, 'name', $field->name), array(
 					'class' => 'input-xlarge', 'id' => 'name'
 				) ); ?>

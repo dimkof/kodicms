@@ -2,7 +2,6 @@
 
 class Controller_System_Datasource extends Controller_System_Backend
 {
-	
 	public function before()
 	{
 		parent::before();

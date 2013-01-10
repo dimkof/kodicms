@@ -35,14 +35,14 @@
 		<div class="control-group">
 			<label class="control-label" for="field-type-select"><?php echo __('Field type'); ?></label>
 			<div class="controls">
-				<?php echo Form::select( 'family', DataSource_Hybrid_Field::types(), Arr::get($post_data, 'family'), array(
+				<?php echo Form::select( 'family', DataSource_Data_Hybrid_Field::types(), Arr::get($post_data, 'family'), array(
 					'id' => 'field-type-select'
 				)); ?>
 			</div>
 		</div>
 		
 		<div id="field-options">
-			<?php foreach (DataSource_Hybrid_Field::types() as $type => $title): ?>
+			<?php foreach (DataSource_Data_Hybrid_Field::types() as $type => $title): ?>
 			<?php echo View::factory('datasource/data/hybrid/field/add/' . $type, array(
 				'sections' => $sections, 'post_data' => $post_data, 'title' => $title
 			)); ?>

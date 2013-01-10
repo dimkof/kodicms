@@ -13,7 +13,7 @@ class Controller_Hybrid_Document extends Controller_System_Datasource
 		$id = (int) $this->request->query('id');
 		$ds_id = (int) $this->request->query('ds_id');
 		
-		$ds = Datasource_Manager::load($ds_id);
+		$ds = Datasource_Data_Manager::load($ds_id);
 
 		if(!$id)
 		{
@@ -95,7 +95,7 @@ class Controller_Hybrid_Document extends Controller_System_Datasource
 			return;
 		}
 		
-		$dsf = new Datasource_Hybrid_Factory;
+		$dsf = new DataSource_Data_Hybrid_Factory;
 		$dsf->remove_documents($doc_ids);
 	}
 	
@@ -107,7 +107,7 @@ class Controller_Hybrid_Document extends Controller_System_Datasource
 		$ds_id = (int) $this->request->post('ds_id');
 		$dest_ds_id = (int) $this->request->post('dest_ds_id');
 		
-		$dsf = new Datasource_Hybrid_Factory;
+		$dsf = new DataSource_Data_Hybrid_Factory;
 	
 		$dsf->cast_documents($ids, $ds_id, $dest_ds_id);
 	}
@@ -124,7 +124,7 @@ class Controller_Hybrid_Document extends Controller_System_Datasource
 			return;
 		}
 		
-		$dsf = new Datasource_Hybrid_Factory;
+		$dsf = new DataSource_Data_Hybrid_Factory;
 		$dsf->publish_documents($doc_ids);
 	}
 	
@@ -140,7 +140,7 @@ class Controller_Hybrid_Document extends Controller_System_Datasource
 			return;
 		}
 		
-		$dsf = new Datasource_Hybrid_Factory;
+		$dsf = new DataSource_Data_Hybrid_Factory;
 		$dsf->unpublish_documents($doc_ids);
 	}
 }

@@ -31,8 +31,8 @@
 							
 							<?php echo $menu ?>
 							
+							<?php if(isset($toolbar)): ?>
 							<br />
-
 							<div class="outline">
 								<div class="widget outline_inner">
 									<div class="widget-header">
@@ -41,6 +41,7 @@
 									</div>
 								</div>
 							</div>
+							<?php endif; ?>
 						</div>
 						<div class="span9">
 							<?php echo $content; ?>

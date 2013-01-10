@@ -6,17 +6,17 @@ class Controller_Datasources_Data extends Controller_System_Datasource
 	public function action_index()
 	{
 		$cur_ds_id = (int) Arr::get($_GET, 'ds_id', Cookie::get('ds_id'));
-		$tree = Datasource_Manager::get_tree();
+		$tree = Datasource_Data_Manager::get_tree();
 
-		$cur_ds_id = Datasource_Manager::exists($cur_ds_id) 
+		$cur_ds_id = Datasource_Data_Manager::exists($cur_ds_id) 
 				? $cur_ds_id
-				: Datasource_Manager::$first;
+				: Datasource_Data_Manager::$first;
 		
-		$ds = Datasource_Manager::load($cur_ds_id);
+		$ds = Datasource_Data_Manager::load($cur_ds_id);
 		
 		$this->template->content = View::factory('datasource/data/index');
 		$this->template->menu = View::factory('datasource/data/menu', array(
-			'tree' => Datasource_Manager::get_tree(),
+			'tree' => Datasource_Data_Manager::get_tree(),
 		));
 		
 		$this->template->toolbar = View::factory('datasource/data/toolbar');
@@ -52,7 +52,7 @@ class Controller_Datasources_Data extends Controller_System_Datasource
 		$this->styles[] = ADMIN_RESOURCES . 'libs/jquery-treeview/jquery.treeview.css';
 		$this->scripts[] = ADMIN_RESOURCES . 'libs/jquery-treeview/jquery.treeview.js';
 		
-//		$agent = Datasource_Hybrid_Agent::instance(1, 1, FALSE);
+//		$agent = DataSource_Data_Hybrid_Agent::instance(1, 1, FALSE);
 //		
 //		echo $agent->get_query_props(array(
 //			array('id' => 1), array('id' => 3)

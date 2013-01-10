@@ -6,7 +6,7 @@
 		)); ?>
 
 		<ul class="dropdown-menu">
-		<?php foreach (Datasource_Manager::types() as $type => $title): ?>
+		<?php foreach (Datasource_Data_Manager::types() as $type => $title): ?>
 			<li><?php echo HTML::anchor($type . '/section/create', $title); ?></li>
 		<?php endforeach; ?>
 		</ul>
