@@ -159,7 +159,7 @@ class DataSource_Data_Hybrid_Agent {
 	 * @param array $filter
 	 * @return Database_Query_Builder_Select
 	 */
-	public function get_query_props($fields, $order = array(), $filter = array())
+	public function get_query_props($fields, $fetched_objects = array(), $order = array(), $filter = array())
 	{
 		$result = DB::select('d.id', 'd.ds_id', 'd.header', 'd.published')
 			->from(array('dshybrid_' . $this->ds_id,  'ds'))
@@ -174,7 +174,7 @@ class DataSource_Data_Hybrid_Agent {
 
 		for($i = 0, $l = count($fields); $i < $l; $i++) 
 		{
-			$fid = $fields[$i]['id'];
+			$fid = $fields[$i];
 			$field = $ds_fields[$fid];
 			
 			if(!$field) continue;
@@ -198,7 +198,7 @@ class DataSource_Data_Hybrid_Agent {
 				$dss[$fid] = TRUE;
 			}
 			// TODO протестировать
-			elseif($field['type'] == DataSource_Data_Hybrid_Field::TYPE_DOCUMENT AND empty($fields[$i]['fetcher'])) 
+			elseif($field['type'] == DataSource_Data_Hybrid_Field::TYPE_DOCUMENT AND isset($fetched_objects[$fid])) 
 			{
 				$result->join(array('ds' . $field['ds_type'], 'dss' . $fid), 'left')
 					->on(DataSource_Data_Hybrid_Field::PREFFIX . $field['name'], '=', 'dds' . $fid . '.id')

@@ -12,6 +12,8 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 	
 	public $doc_fields = array();
 	
+	public $doc_fetched_objects = array();
+	
 	public $doc_filter = array();
 	
 	public $doc_order = array();
@@ -31,6 +33,8 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 	public $node_id = NULL;
 	public $node_type = 0;
 	
+	protected $arrays = array();
+
 	public static function types()
 	{
 		return array(
@@ -44,7 +48,16 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 	{
 		$this->header = Arr::get($data, 'header');
 		$this->ds_id = (int) Arr::get($data, 'ds_id');
-		$this->doc_fields = array_values(Arr::get($data, 'field', array()));
+		
+		$this->doc_fields = $this->doc_fetched_objects = array();
+		foreach(Arr::get($data, 'field', array()) as $f)
+		{
+			$this->doc_fields[] = (int) $f['id'];
+			
+			if(isset($f['fetcher']))
+				$this->doc_fetched_objects[(int) $f['id']] = (int) $f['fetcher'];
+		}
+		
 		
 		$this->list_offset = (int) Arr::get($data, 'list_offset');
 		$this->list_size = (int) Arr::get($data, 'list_size');
@@ -65,7 +78,7 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 
 	public function fetch_data()
 	{
-		$docs = $this->_get_documents();
+		$docs = $this->get_documents();
 		
 		$result = array();
 		
@@ -79,7 +92,7 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 		return $result;
 	}
 	
-	protected function _get_documents( $recurse = 3 )
+	protected function get_documents( $recurse = 3 )
 	{
 		$result = array();
 		
@@ -91,8 +104,18 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 		}
 		
 		$query = $this
-			->_get_query()
-			->execute();
+			->_get_query();
+		
+		if($this->caching)
+		{
+			$query
+				->cache_key($this->get_cache_id())
+				->cached($this->cache_lifetime);
+		}
+		else
+		{
+			Kohana::cache('Database::cache(' . $this->get_cache_id() . ')', NULL, -3600);
+		}
 		
 		$ds_fields = $agent->get_fields();
 		$fields = array();
@@ -103,10 +126,10 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 				$fields[$fid] = $ds_fields[$fid];
 			}
 		}
-		
+
 		$href_params = $this->_parse_doc_id();
 		
-		foreach ($query as $row)
+		foreach ($query->execute() as $row)
 		{
 			$result[$row['id']] = array();
 			$doc = & $result[$row['id']];
@@ -123,13 +146,34 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 						);
 						break;
 					case DataSource_Data_Hybrid_Field::TYPE_DOCUMENT:
-						$doc[$field['name']] = array(
-							'id' => $row[$fid], 
-							'header' => $$row[$fid . 'header']
-						);
+						if($recurse > 0 AND isset($this->doc_fetched_objects[$fid]))
+						{
+							$doc[$field['name']] = $this->_fetch_related_object($row, $fid, $recurse);
+						}
+						else
+						{
+							$doc[$field['name']] = array(
+								'id' => $row[$fid], 
+								'header' => $row[$fid . 'header']
+							);
+						}
 						break;
 					case DataSource_Data_Hybrid_Field::TYPE_ARRAY:
-						$doc[$field['name']] = $row[$fid];
+						if($recurse > 0 AND isset($this->doc_fetched_objects[$fid]))
+						{
+							if(isset($row[$fid]))
+							{
+								$doc[$field['name']] = $this->_fetch_related_object($row, $fid, $recurse);
+							}
+							else
+							{
+								$doc[$field['name']] = array();
+							}
+						}
+						else
+						{
+							$doc[$field['name']] = $row[$fid];
+						}
 						break;
 //					case DataSource_Data_Hybrid_Field::TYPE_PRIMITIVE:
 					default:
@@ -155,6 +199,18 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 		return $result;
 	}
 	
+	protected function _fetch_related_object($row, $fid, $recurse)
+	{
+		$object_id = $this->doc_fetched_objects[$fid];
+		$object = Datasource_Object_Manager::load($object_id);
+		if($object === NULL) return array();
+
+		$doc_ids = explode(',', $row[$fid]);
+		$object->ids = $doc_ids;
+		$docs = $object->get_documents( $recurse - 1);
+		return $docs;
+	}
+
 	protected function _parse_doc_id()
 	{
 		$names = $values = array();
@@ -176,7 +232,7 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 	protected function _get_query()
 	{
 		$agent = $this->get_agent();
-		$query = $agent->get_query_props($this->doc_fields, $this->doc_order, $this->doc_filter);
+		$query = $agent->get_query_props($this->doc_fields, $this->doc_fetched_objects, $this->doc_order, $this->doc_filter);
 		
 		if(is_array($this->ids) AND count($this->ids) > 0)
 		{

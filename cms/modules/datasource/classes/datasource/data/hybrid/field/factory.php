@@ -182,12 +182,12 @@ class DataSource_Data_Hybrid_Field_Factory {
 				)), '>', 0)
 				->or_where(DB::expr('INSTR(:f1, :f2)', array(
 					':f1' => 'dsh.ds_key', ':f2' => DB::expr('CONCAT(:f1, ".")', array(
-						':f1' => DB::expr(Database::instance()->quote_column('dsh0.path'))
+						':f1' => DB::expr(Database::instance()->quote_column('dsh0.ds_key'))
 					))
 				)), '=', 1)
 			->where_close()
 			->where('dsh.ds_id', '=', DB::expr(':f', array(':f' => 
-				DB::expr(Database::instance()->quote_column('dsh.ds_id')))))
+				DB::expr(Database::instance()->quote_column('dsf.ds_id')))))
 			->order_by('dsh.ds_key')
 			->order_by('dsf.family')
 			->order_by('dsf.name')

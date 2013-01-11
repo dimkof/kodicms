@@ -1,6 +1,14 @@
 <?php
 $fields = DataSource_Data_Hybrid_Field_Factory::get_related_fields($object->ds_id);
-$doc_fields = array_flip($object->doc_fields);
+
+$hobjects = Datasource_Object_Manager::get_objects('hybrid', 'hl');
+$objects = array('------');
+foreach ($hobjects as $id => $obj)
+{
+	if($id == $object->id) continue;
+	$objects[$id] = $obj['name'];
+}
+
 ?>
 <div class="widget-header">
 	<h4><?php echo __('Fetched document fields'); ?></h4>
@@ -10,6 +18,7 @@ $doc_fields = array_flip($object->doc_fields);
 		<colgroup>
 			<col width="30px" />
 			<col width="100px" />
+			<col width="200px" />
 			<col />
 		</colgroup>
 		<tbody>
@@ -21,6 +30,7 @@ $doc_fields = array_flip($object->doc_fields);
 				</td>
 				<td class="sys">ID</td>
 				<td>ID</td>
+				<td></td>
 			</tr>
 			<tr>
 				<td class="f">
@@ -30,13 +40,14 @@ $doc_fields = array_flip($object->doc_fields);
 				</td>
 				<td class="sys">header</td>
 				<td><?php echo __('Header'); ?></td>
+				<td></td>
 			</tr>
 			
 			<?php foreach($fields as $f): ?>
 			<tr id="field-<?php echo $f->name; ?>">
 				<td class="f">
 					<?php
-					echo Form::checkbox('field['.$f->id.']', $f->id, isset($doc_fields[$f->id])); ?>
+					echo Form::checkbox('field['.$f->id.'][id]', $f->id, in_array($f->id, $object->doc_fields)); ?>
 
 				</td>
 				<td class="sys">
@@ -44,6 +55,24 @@ $doc_fields = array_flip($object->doc_fields);
 				</td>
 				<td>
 					<?php echo HTML::anchor('hybrid/field/edit/' . $f->id, $f->header, array('target' => 'blank') ); ?>
+				</td>
+				<td>
+					<?php if(in_array($f->family, array(
+						DataSource_Data_Hybrid_Field::TYPE_ARRAY,
+						DataSource_Data_Hybrid_Field::TYPE_DOCUMENT
+					)) AND !empty($objects)): ?>
+					
+					
+					<?php 
+					$selected = NULL;
+					if(isset($object->doc_fetched_objects[$f->id]))
+					{
+						$selected = $object->doc_fetched_objects[$f->id];
+					}
+					
+					echo Form::select('field['.$f->id.'][fetcher]', $objects, $selected); 
+					?>
+					<?php endif; ?>
 				</td>
 			</tr>
 			<?php endforeach; ?>

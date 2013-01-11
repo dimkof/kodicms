@@ -154,6 +154,11 @@ class Datasource_Object_Manager {
 			->execute()
 			->current();
 		
+		if($result === NULL)
+		{
+			return NULL;
+		}
+
 		$object = unserialize($result['code']);
 		$object->id = $result['id'];
 		

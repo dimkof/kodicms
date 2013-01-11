@@ -134,6 +134,7 @@ abstract class Datasource_Object_Decorator {
 		}
 		else if( ! $this->caching )
 		{
+			Fragment::delete($this->get_cache_id());
 			echo $this->_fetch_render($params);
 		}
 		

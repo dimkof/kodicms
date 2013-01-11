@@ -150,11 +150,11 @@
 		</div>
 	</div>
 	
-	<?php echo View::factory('datasource/object/template/hybrid/fields', array(
+	<?php echo View::factory('datasource/object/template/hybrid/blocks/fields', array(
 		'object' => $object
 	)); ?>
 	
-	<?php echo View::factory('datasource/object/template/hybrid/sorting', array(
+	<?php echo View::factory('datasource/object/template/hybrid/blocks/sorting', array(
 		'object' => $object
 	)); ?>
 
