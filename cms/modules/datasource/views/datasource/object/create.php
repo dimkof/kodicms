@@ -35,7 +35,7 @@
 		</div>
 	</div>
 	<div class="widget-header">
-		<h4><?php echo __('Properties'); ?></h4>
+		<h4><?php echo __('Data'); ?></h4>
 	</div>
 	<div class="widget-content">
 		<div class="control-group">
@@ -54,7 +54,5 @@
 			'icon' => UI::icon( 'plus'), 'class' => 'btn btn-large'
 		)); ?>
 	</div>
-</form>
-
 <?php echo Form::close(); ?>
 </div>

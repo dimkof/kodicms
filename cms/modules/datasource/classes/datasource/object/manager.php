@@ -13,6 +13,26 @@ class Datasource_Object_Manager {
 		   ->as_array();
 	}
 	
+	/**
+	 * 
+	 * @param string $ds_type
+	 * @param string $obj_type
+	 * @param integer $ds_id
+	 * @return \class
+	 */
+	public static function get_empty_object($ds_type, $obj_type, $ds_id) 
+	{
+		$class = 'Datasource_Object_' . $ds_type . '_' . $obj_type;
+
+		$object = new $class;
+
+		$object->ds_type = $ds_type;
+		$object->type = $obj_type;
+		$object->ds_id = (int) $ds_id;
+
+		return $object;
+	}
+
 	public static function get_objects($ds_type, $obj_type) 
 	{
 		$result = array();

@@ -70,10 +70,10 @@ class Controller_Datasources_Objects extends Controller_System_Datasource {
 		
 		list($ds_type, $obj_type) = explode('.', $node);
 
-		$ds_sections = Datasource_Data_Manager::get_all($ds_type);
+		$datasources = Datasource_Data_Manager::get_all($ds_type);
 		
 		$options = array();
-		foreach ($ds_sections as $value)
+		foreach ($datasources as $value)
 		{
 			$options[$value['id']] = $value['name'];
 		}
@@ -114,7 +114,7 @@ class Controller_Datasources_Objects extends Controller_System_Datasource {
 			$this->go_back();
 		}
 		
-		$object = Datasource_Object_Decorator::factory($array['ds_type'], $array['obj_type'], $array['ds_id']);
+		$object = Datasource_Object_Manager::get_empty_object($array['ds_type'], $array['obj_type'], $array['ds_id']);
 		
 		$object->name = $array['name'];
 		$object->description = Arr::get($array, 'description');
@@ -131,16 +131,19 @@ class Controller_Datasources_Objects extends Controller_System_Datasource {
 	{
 		$id = (int) $this->request->param('id');
 		$object = Datasource_Object_Manager::load($id);
-		$datasources = Datasource_Data_Manager::get_all($object->ds_type);
-		$fields = DataSource_Data_Hybrid_Field_Factory::get_related_fields($object->ds_id);
-
-		$fields_by_id = array();
-		foreach ($fields as $field)
+		
+		if($this->request->method() === Request::POST)
 		{
-			$fields_by_id[$field->id] = $field;
+			return $this->_save($object);
 		}
 		
-		echo debug::vars($object, $datasources, $fields, $fields_by_id);
+		$datasources = Datasource_Data_Manager::get_all($object->ds_type);
+		
+		$options = array();
+		foreach ($datasources as $value)
+		{
+			$options[$value['id']] = $value['name'];
+		}
 		
 		$node = $object->ds_type . '.' . $object->type;
 		$path = $object->ds_type . '/' . $object->type;
@@ -154,9 +157,19 @@ class Controller_Datasources_Objects extends Controller_System_Datasource {
 		
 		$this->template->content = View::factory('datasource/object/template/' . $path, array(
 			'object' => $object,
-			'datasources' => $datasources,
-			'fields' => $fields,
-			'fields_by_id' => $fields_by_id
+			'options' => $options,
+			'template' => View::factory('datasource/object/template', array(
+				'object' => $object
+			))
 		));
+	}
+	
+	protected function _save($object)
+	{
+		$data = $this->request->post();
+		$object->set_cache_settings($data);
+		$object->set_values($data);
+		Datasource_Object_Manager::save($object);
+		$this->go_back();
 	}
 }

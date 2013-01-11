@@ -162,10 +162,14 @@ class DataSource_Data_Hybrid_Field_Factory {
 	 */
 	public static function get_related_fields($ds_id) 
 	{
-		$ds_id = (int) $ds_id;
+		static $f;
 
-		$result = array();
+		$ds_id = (int) $ds_id;
 		
+		if(isset($f[$ds_id])) return $f[$ds_id];
+		
+		$result = array();
+
 		$query = DB::select('dsf.*')
 			->from(array('hybriddatasources', 'dsh0'))
 			->from(array('hybriddatasources', 'dsh'))
@@ -196,6 +200,8 @@ class DataSource_Data_Hybrid_Field_Factory {
 				$result[] = self::_get_field_from_array($row);
 			}
 		}
+		
+		$f[$ds_id] = $result;
 
 		return $result;
 	}

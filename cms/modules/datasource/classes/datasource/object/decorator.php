@@ -4,7 +4,7 @@
  * @package    Kodi/Datasource
  */
 
-class Datasource_Object_Decorator {
+abstract class Datasource_Object_Decorator {
 	
 	const BLOCK_TYPE_PRE	= 'PRE';
 	const BLOCK_TYPE_POST	= 'POST';
@@ -51,6 +51,12 @@ class Datasource_Object_Decorator {
 	 * @var string 
 	 */
 	public $description = '';
+	
+	/**
+	 *
+	 * @var string 
+	 */
+	public $header = NULL;
 
 
 	/**
@@ -75,13 +81,19 @@ class Datasource_Object_Decorator {
 	 *
 	 * @var bool 
 	 */
-	public $caching = FALSE;
+	public $caching = TRUE;
 	
 	/**
 	 *
 	 * @var integer 
 	 */
 	public $cache_lifetime = 3600;
+	
+	/**
+	 *
+	 * @var bool 
+	 */
+	public $throw_404 = FALSE;
 
 	public function __construct() {}
 	
@@ -120,7 +132,7 @@ class Datasource_Object_Decorator {
 			echo $this->_fetch_render($params);
 			Fragment::save();
 		}
-		else 
+		else if( ! $this->caching )
 		{
 			echo $this->_fetch_render($params);
 		}
@@ -153,7 +165,14 @@ class Datasource_Object_Decorator {
 	}
 
 //	abstract public function on_page_load();
-//	abstract public function fetch_data();
+	abstract public function fetch_data();
+	abstract public function set_values(array $data);
+	
+	public function set_cache_settings(array $data)
+	{
+		$this->caching = (bool) Arr::get($data, 'caching', FALSE);
+		$this->cache_lifetime = (int) Arr::get($data, 'cache_lifetime');
+	}
 
 	/**
 	 * 
@@ -189,24 +208,5 @@ class Datasource_Object_Decorator {
 	public function __toString()
 	{
 		return $this->render($params);
-	}
-
-	/**
-	 * 
-	 * @param string $ds_type
-	 * @param string $obj_type
-	 * @param integer $ds_id
-	 * @return \class
-	 */
-	public static function factory($ds_type, $obj_type, $ds_id) 
-	{
-		$class = 'Datasource_Object_' . $ds_type . '_' . $obj_type;
-
-		$object = new $class;
-
-		$object->ds_type = $ds_type;
-		$object->type = $obj_type;
-		$object->ds_id = (int) $ds_id;
-		return $object;
 	}
 }

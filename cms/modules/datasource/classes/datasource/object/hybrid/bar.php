@@ -6,4 +6,8 @@
 
 class Datasource_Object_Hybrid_Bar extends Datasource_Object_Hybrid_HL {
 
+	public function values(array $data) 
+	{
+		parent::values($data);
+	}
 }
