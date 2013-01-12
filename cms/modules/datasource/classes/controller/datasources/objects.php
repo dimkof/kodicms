@@ -158,6 +158,9 @@ class Controller_Datasources_Objects extends Controller_System_Datasource {
 		$this->template->content = View::factory('datasource/object/template/' . $path, array(
 			'object' => $object,
 			'options' => $options,
+			'general' => View::factory('datasource/object/template/general', array(
+				'object' => $object
+			)),
 			'template' => View::factory('datasource/object/template/template', array(
 				'object' => $object
 			))

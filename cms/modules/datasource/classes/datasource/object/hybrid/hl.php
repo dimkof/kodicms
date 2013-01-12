@@ -5,11 +5,7 @@
  */
 
 class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
-	
-	const NID_PLAIN = 0;
-	const NID_OR = 1;
-	const NID_AND = 2;
-	
+
 	public $doc_fields = array();
 	
 	public $doc_fetched_objects = array();
@@ -30,19 +26,7 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 	
 	public $ids = array();
 	
-	public $node_id = NULL;
-	public $node_type = 0;
-	
 	protected $arrays = array();
-
-	public static function types()
-	{
-		return array(
-			self::NID_PLAIN		=> __('Single node'),
-			self::NID_OR		=> __('Multiple node (OR)'),
-			self::NID_AND		=> __('Multiple node (AND)')
-		);
-	}
 	
 	public function set_values(array $data) 
 	{
@@ -58,6 +42,7 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 				$this->doc_fetched_objects[(int) $f['id']] = (int) $f['fetcher'];
 		}
 		
+		$this->doc_order = Arr::get($data, 'doc_order', array());
 		
 		$this->list_offset = (int) Arr::get($data, 'list_offset');
 		$this->list_size = (int) Arr::get($data, 'list_size');
@@ -67,9 +52,6 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 		
 		$this->doc_uri = Arr::get($data, 'doc_uri', $this->doc_uri);
 		$this->doc_id = str_replace('\r\n', '\n', Arr::get($data, 'doc_id', $this->doc_id));
-		
-		$this->node_id = Arr::get($data, 'node_id');
-		$this->node_type = (int) Arr::get($data, 'node_type');
 		
 		$this->throw_404 = (bool) Arr::get($data, 'throw_404');
 		

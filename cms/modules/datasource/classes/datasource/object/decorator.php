@@ -9,6 +9,9 @@ abstract class Datasource_Object_Decorator {
 	const BLOCK_TYPE_PRE	= 'PRE';
 	const BLOCK_TYPE_POST	= 'POST';
 	
+	const ORDER_ASC		= 'ASC';
+	const ORDER_DESC	= 'DESC';
+	
 	/**
 	 *
 	 * @var integer

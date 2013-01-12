@@ -212,77 +212,66 @@ class DataSource_Data_Hybrid_Agent {
 		}
 		
 		$j = 0;
-		
-		if(sizeof($order))
+		foreach ($order as $pos => $data)
 		{
-			for($l = sizeof($order); $j < $l; $j++) 
+			$field = NULL;
+			$fid = key($data);
+			$dir = $data[key($data)];
+
+			if(isset($ds_fields[$fid])) 
 			{
-				$field = NULL;
-				
-				if(Valid::numeric( $order[$j]['id'] ))
+				$field = $ds_fields[$fid];
+			}
+			else if (isset($sys_fields[$fid]))
+			{
+				$field = $sys_fields[$fid];
+			}
+
+			if( $field === NULL ) continue;
+
+			if(!isset($t[$field['ds_id']])) 
+			{
+				$result->join(array('dshybrid_'. $field['ds_id'], 'd' . ($i + $j)))
+					->on('d' . ($i + $j) . '.id', '=', 'ds.id');
+
+				$t[$field['ds_id']] = TRUE;
+			}
+
+			if($field['type'] == DataSource_Data_Hybrid_Field::TYPE_DATASOURCE) 
+			{
+				if(!isset($dss[$fId]))
 				{
-					$fid = $order[$j]['id'];
-					
-					if(isset($ds_fields[$fid])) 
-					{
-						$field = $ds_fields[$fid];
-						$dir = $order[$j]['id'] < 0 ? 'DESC' : 'ASC';
-					}
-					else
-					{
-						$dir = substr($order[$j]['id'], 0, 1) == '-' ? 'DESC' : '';
-						$fid = $dir ? substr($order[$j]['id'], 1) : $order[$j]['id'];
-						if(isset($sys_fields[$fid]))
-						{
-							$f = $sys_fields[$fid];
-						}
-					}
+					$result
+						->join(array('datasources', 'dss' . $fid), 'left')
+						->on(DataSource_Data_Hybrid_Field::PREFFIX . $field['name'], '=', 'dss' . $fid . '.ds_id');
 				}
-				
-				if(!$field)	continue;
-				
-				if(!isset($t[$field['ds_id']])) 
+
+				$result->order_by('dss' . $fid . '.docs', $dir);
+			} 
+			elseif($field['type'] == DataSource_Data_Hybrid_Field::TYPE_DOCUMENT) 
+			{
+				if(!isset($dds[$fid])) 
 				{
-					$result->join(array('dshybrid_'. $field['ds_id'], 'd' . ($i + $j)))
-						->on('d' . ($i + $j) . '.id', '=', 'ds.id');
-	
-					$t[$field['ds_id']] = TRUE;
-				}
-				
-				if($field['type'] == DataSource_Data_Hybrid_Field::TYPE_DATASOURCE) 
-				{
-					if(!isset($dss[$fId]))
-					{
-						$result
-							->join(array('datasources', 'dss' . $fid), 'left')
-							->on(DataSource_Data_Hybrid_Field::PREFFIX . $field['name'], '=', 'dss' . $fid . '.ds_id');
-					}
-					
-					$result->order_by('dss' . $fid . '.docs', $dir);
+					$result
+						->join(array('ds' . $field['ds_type'], 'dds' . $fid), 'left')
+						->on(DataSource_Data_Hybrid_Field::PREFFIX . $field['name'], '=', 'dds' . $fid . '.id')
+						->on('dds' . $fid . '.published', '=', DB::expr( 1 ))
+						->order_by('dds' . $fid . '.header', $dir);
 				} 
-				elseif($field['type'] == DataSource_Data_Hybrid_Field::TYPE_DOCUMENT) 
-				{
-					if(!isset($dds[$fid])) 
-					{
-						$result
-							->join(array('ds' . $field['ds_type'], 'dds' . $fid), 'left')
-							->on(DataSource_Data_Hybrid_Field::PREFFIX . $field['name'], '=', 'dds' . $fid . '.id')
-							->on('dds' . $fid . '.published', '=', DB::expr( 1 ))
-							->order_by('dds' . $fid . '.header', $dir);
-					} 
-					else
-					{
-						$result->order_by($fid . '.header', $dir);
-					}
-				}
 				else
 				{
-					$field_name = isset($field['sys']) ? '': DataSource_Data_Hybrid_Field::PREFFIX;
-					$result->order_by($field_name . $field['name'], $dir);
+					$result->order_by($fid . '.header', $dir);
 				}
-				
-				unset($field);
 			}
+			else
+			{
+				$field_name = isset($field['sys']) ? '': DataSource_Data_Hybrid_Field::PREFFIX;
+				$result->order_by($field_name . $field['name'], $dir);
+			}
+
+			unset($field);
+
+			$j++;
 		}
 		
 		$i += $j;

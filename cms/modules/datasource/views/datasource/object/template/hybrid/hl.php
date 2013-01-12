@@ -4,58 +4,15 @@
 	'class' => 'form-horizontal'
 )); ?>
 	
-	<div class="widget-header">
-		<h4><?php echo __('General Information'); ?></h4>
-	</div>
-	<div class="widget-content">
-
-		<div class="control-group">
-			<label class="control-label" for="object_name"><?php echo __('Object Header'); ?></label>
-			<div class="controls">
-				<?php
-				echo Form::input( 'name', $object->name, array(
-					'class' => 'input-xlarge', 'id' => 'object_name'
-				) );
-				?>
-			</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label" for="object_description"><?php echo __('Object Description'); ?></label>
-			<div class="controls">
-				<?php
-				echo Form::textarea( 'description', $object->description, array(
-					'class' => 'input-xlarge', 'id' => 'object_description', 'rows' => 4
-				) );
-				?>
-			</div>
-		</div>
-	</div>
+	<?php echo $general; ?>
 	
 	<?php echo $template; ?>
 	
-	<div class="widget-header">
-		<h4><?php echo __('Data'); ?></h4>
-	</div>
-	<div class="widget-content">
-		<div class="control-group">
-			<label class="control-label" for="ds_id"><?php echo __('Section'); ?></label>
-			<div class="controls">
-				<?php
-				echo Form::select( 'ds_id', $options, $object->ds_id, array(
-					'class' => 'input-large', 'id' => 'ds_id'
-				) );
-				?>
-			</div>
-		</div>
-		
-		<div class="control-group">
-			<div class="controls">
-				<label class="checkbox"><?php echo Form::checkbox('only_sub', 1, $object->only_sub); ?> <?php echo __('Use subsections only'); ?></label>
-			</div>
-		</div>
-	</div>
-	
+	<?php echo View::factory('datasource/object/template/hybrid/blocks/section', array(
+		'object' => $object,
+		'options' => $options
+	)); ?>
+
 	<div class="widget-header">
 		<h4><?php echo __('Properties'); ?></h4>
 	</div>
@@ -88,28 +45,6 @@
 				<?php
 				echo Form::input( 'list_size', $object->list_size, array(
 					'class' => 'input-small', 'id' => 'list_size'
-				) );
-				?>
-			</div>
-		</div>
-		
-		<div class="control-group">
-			<label class="control-label" for="node_id"><?php echo __('Node identificator'); ?></label>
-			<div class="controls">
-				<?php
-				echo Form::input( 'node_id', $object->node_id, array(
-					'class' => 'input-small', 'id' => 'node_id'
-				) );
-				?>
-			</div>
-		</div>
-		
-		<div class="control-group">
-			<label class="control-label" for="node_type"><?php echo __('Node type'); ?></label>
-			<div class="controls">
-				<?php
-				echo Form::select( 'node_type', Datasource_Object_Hybrid_HL::types(), $object->node_type, array(
-					'class' => 'input-large', 'id' => 'node_type'
 				) );
 				?>
 			</div>
