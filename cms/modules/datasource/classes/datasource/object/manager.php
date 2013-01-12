@@ -6,6 +6,10 @@
 
 class Datasource_Object_Manager {
 	
+	/**
+	 * 
+	 * @return array
+	 */
 	public static function map()
 	{
 		return Kohana::$config
@@ -33,6 +37,12 @@ class Datasource_Object_Manager {
 		return $object;
 	}
 
+	/**
+	 * 
+	 * @param string $ds_type
+	 * @param string $obj_type
+	 * @return array
+	 */
 	public static function get_objects($ds_type, $obj_type) 
 	{
 		$result = array();
@@ -63,6 +73,9 @@ class Datasource_Object_Manager {
 		return $result;
 	}
 	
+	/**
+	 * @return array
+	 */
 	public static function get_all_objects()
 	{
 		$result = array();
@@ -85,8 +98,16 @@ class Datasource_Object_Manager {
 				'obj_type'	=>	$row['obj_type'],
 			);
 		}
+		
+		return $result;
 	}
 	
+	/**
+	 * 
+	 * @param Datasource_Object_Decorator $object
+	 * @return integer
+	 * @throws HTTP_Exception_404
+	 */
 	public static function create($object)
 	{
 		if($object->loaded())
@@ -112,6 +133,12 @@ class Datasource_Object_Manager {
 		return $result[0];
 	}
 	
+	/**
+	 * 
+	 * @param Datasource_Object_Decorator $object
+	 * @return type
+	 * @throws HTTP_Exception_404
+	 */
 	public static function save($object)
 	{
 		if( ! $object->loaded() )
@@ -136,9 +163,14 @@ class Datasource_Object_Manager {
 			->where('id', '=', $object->id)
 			->execute();
 
-		return $result[0];
+		return $result;
 	}
 	
+	/**
+	 * 
+	 * @param array $ids
+	 * @return type
+	 */
 	public static function remove( array $ids )
 	{
 		return DB::delete('objects')
@@ -146,6 +178,11 @@ class Datasource_Object_Manager {
 			->execute();
 	}
 	
+	/**
+	 * 
+	 * @param integer $id
+	 * @return Datasource_Object_Decorator
+	 */
 	public static function load($id)
 	{
 		$result = DB::select()->from('objects')

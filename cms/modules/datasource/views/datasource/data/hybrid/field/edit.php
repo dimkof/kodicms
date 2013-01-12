@@ -17,6 +17,7 @@
 					'class' => 'input-xlarge', 'id' => 'name'
 				) ); ?>
 				<?php else: ?>
+				<?php echo Form::hidden( 'name', Arr::get($post_data, 'name', $field->name)); ?>
 				<?php echo UI::field($field->name); ?>
 				<?php endif; ?>
 			</div>

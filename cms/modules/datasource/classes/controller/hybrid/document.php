@@ -73,7 +73,7 @@ class Controller_Hybrid_Document extends Controller_System_Datasource
 		Messages::success('Document saved');
 		
 		// save and quit or save and continue editing?
-		if ( $this->request->post('commit') )
+		if ( $this->request->post('commit') !== NULL )
 		{
 			$this->go( URL::site('datasources/data' . URL::query(array('ds_id' => $ds->ds_id), FALSE)));
 		}

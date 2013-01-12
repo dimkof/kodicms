@@ -77,10 +77,10 @@ class DataSource_Data_Hybrid_Document {
 			return $this;
 		}
 
-		$this->id = (int) Arr::get($arr, 'id');
-		$this->ds_id = (int) Arr::get($arr, 'ds_id');
-		$this->published = Arr::get($arr, 'published') ? TRUE : FALSE;
-		$this->header = Arr::get($arr, 'header');
+		if(isset($arr['id'])) $this->id = (int) $arr['id'];
+		if(isset($arr['ds_id'])) $this->ds_id = (int) $arr['ds_id'];
+		if(isset($arr['published'])) $this->ds_id = (bool) $arr['published'];
+		if(isset($arr['header'])) $this->header = $arr['header'];
 		
 		foreach($this->field_names as $k)
 		{

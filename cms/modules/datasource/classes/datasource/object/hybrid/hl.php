@@ -8,26 +8,66 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 
 	public $doc_fields = array();
 	
+	/**
+	 *
+	 * @var array 
+	 */
 	public $doc_fetched_objects = array();
 	
+	/**
+	 *
+	 * @var array 
+	 */
 	public $doc_filter = array();
 	
+	/**
+	 *
+	 * @var array 
+	 */
 	public $doc_order = array();
 	
+	/**
+	 *
+	 * @var string 
+	 */
 	public $doc_uri = NULL;
 	
+	/**
+	 *
+	 * @var string 
+	 */
 	public $doc_id = 'item={_id}';
 
+	/**
+	 *
+	 * @var integer 
+	 */
 	public $list_offset = 0;
 	
+	/**
+	 *
+	 * @var integer 
+	 */
 	public $list_size = 10;
 	
+	/**
+	 *
+	 * @var bool 
+	 */
 	public $only_published = TRUE;
 	
+	/**
+	 *
+	 * @var array 
+	 */
 	public $ids = array();
 	
 	protected $arrays = array();
 	
+	/**
+	 * 
+	 * @param array $data
+	 */
 	public function set_values(array $data) 
 	{
 		$this->header = Arr::get($data, 'header');
@@ -58,6 +98,10 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 		$this->sort_by_rand = (bool) Arr::get($data, 'sort_by_rand');
 	}
 
+	/**
+	 * 
+	 * @return array
+	 */
 	public function fetch_data()
 	{
 		$docs = $this->get_documents();
@@ -74,6 +118,11 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 		return $result;
 	}
 	
+	/**
+	 * 
+	 * @param integer $recurse
+	 * @return array
+	 */
 	protected function get_documents( $recurse = 3 )
 	{
 		$result = array();
@@ -181,6 +230,13 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 		return $result;
 	}
 	
+	/**
+	 * 
+	 * @param array $row
+	 * @param integr $fid
+	 * @param integer $recurse
+	 * @return array
+	 */
 	protected function _fetch_related_object($row, $fid, $recurse)
 	{
 		$object_id = $this->doc_fetched_objects[$fid];
@@ -193,6 +249,10 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 		return $docs;
 	}
 
+	/**
+	 * 
+	 * @return array
+	 */
 	protected function _parse_doc_id()
 	{
 		$names = $values = array();
@@ -211,6 +271,10 @@ class Datasource_Object_Hybrid_HL extends Datasource_Object_Hybrid {
 		return $params;
 	}
 
+	/**
+	 * 
+	 * @return Database_Query_Builder
+	 */
 	protected function _get_query()
 	{
 		$agent = $this->get_agent();

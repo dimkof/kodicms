@@ -6,10 +6,22 @@
 
 abstract class Datasource_Object_Hybrid extends Datasource_Object_Decorator {
 	
+	/**
+	 *
+	 * @var DataSource_Data_Hybrid_Agent 
+	 */
 	protected $_agent = NULL;
 
+	/**
+	 *
+	 * @var bool
+	 */
 	public $only_sub = FALSE;
 	
+	/**
+	 *
+	 * @var array 
+	 */
 	protected $_documents = array();
 
 	/**

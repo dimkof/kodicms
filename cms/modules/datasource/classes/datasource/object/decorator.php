@@ -97,8 +97,12 @@ abstract class Datasource_Object_Decorator {
 	 * @var bool 
 	 */
 	public $throw_404 = FALSE;
-
-	public function __construct() {}
+	
+	/**
+	 *
+	 * @var array
+	 */
+	public static $objects = array();
 	
 	/**
 	 * 
@@ -169,9 +173,21 @@ abstract class Datasource_Object_Decorator {
 	}
 
 //	abstract public function on_page_load();
+	
+	/**
+	 * @return array
+	 */
 	abstract public function fetch_data();
+	
+	/**
+	 * @param array $data
+	 */
 	abstract public function set_values(array $data);
 	
+	/**
+	 * 
+	 * @param array $data
+	 */
 	public function set_cache_settings(array $data)
 	{
 		$this->caching = (bool) Arr::get($data, 'caching', FALSE);
