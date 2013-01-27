@@ -141,7 +141,7 @@ class Controller_System_Install extends Controller_System_Frontend
 		if(!isset($data['password_generate']))
 		{
 			$validation
-				->rule('password_field', 'min_length', array(':value', 8))
+				->rule('password_field', 'min_length', array(':value', 5))
 				->rule('password_field', 'not_empty')
 				->rule('password_confirm', 'matches', array(':validation', ':field', 'password_field'));
 		}
